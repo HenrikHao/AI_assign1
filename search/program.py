@@ -33,21 +33,21 @@ def search(input: dict[tuple, tuple]) -> list[tuple]:
     spread(input, (6, 3), (-1, 0) )
     print(render_board(input, ansi=False)) """
     # Code above are all for testing
-    print(render_board(input, ansi=False))
+    print(render_board(input, ansi=True))
     actions = []
     if redWin(input):
         return actions
     while not redWin(input):
-        path = aStarSearch(input, distance)
+        path = aStarSearch(input, chebyshevDistance)
         print(path, "path")
         spreadToken = path[0]
         spreadDestination = path[1]
-        direction = getDirection(spreadToken, spreadDestination)
+        direction = getDirection(spreadToken, spreadDestination, input)
         action = spreadToken + direction
         actions.append(action)
         spread(input, spreadToken, direction)
         print(action)
-        print(render_board(input, ansi=False))
+        print(render_board(input, ansi=True))
     print(actions)
 
     # Here we're returning "hardcoded" actions for the given test.csv file.
