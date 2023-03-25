@@ -218,6 +218,7 @@ def divideTokens(board: dict[tuple, tuple]):
         else:
             blueTokens.append(token)
     #print(redTokens," red")
+    #print(redTokens," red")
     return (redTokens, blueTokens)
 
 def redWin(board: dict[tuple, tuple]):
