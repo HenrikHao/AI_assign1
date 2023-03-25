@@ -147,7 +147,7 @@ def findClosestTwoTokens(redTokens, blueTokens):
     for redToken in redTokens:
         for blueToken in blueTokens:
             tokDistance = distance(redToken, blueToken)
-            print(redToken,blueToken,tokDistance)
+            #print(redToken,blueToken,tokDistance)
             if tokDistance < minDistance:
                 minDistance = tokDistance
                 closestPair = (redToken, blueToken)
@@ -185,7 +185,7 @@ def divideTokens(board: dict[tuple, tuple]):
             redTokens.append(token)
         else:
             blueTokens.append(token)
-    print(redTokens," red")
+    #print(redTokens," red")
     return (redTokens, blueTokens)
 
 def redWin(board: dict[tuple, tuple]):
@@ -252,7 +252,7 @@ def aStarSearch(board: dict[tuple, tuple], heuristic):
 
     while not priorityQ.empty():
         p, currentToken = priorityQ.get()
-        print(currentToken, "curr")
+        #(currentToken, "curr")
         if currentToken == endToken:
             break
 
@@ -263,7 +263,7 @@ def aStarSearch(board: dict[tuple, tuple], heuristic):
             if neighbour not in cost or newCost < cost[neighbour]:
                 cost[neighbour] = newCost
                 priority = newCost + heuristic(endToken, neighbour)
-                print("current ", currentToken," goes into ", neighbour, " with h", heuristic(endToken, neighbour), "new cost:", newCost, "p = ", priority)
+                #print("current ", currentToken," goes into ", neighbour, " with h", heuristic(endToken, neighbour), "new cost:", newCost, "p = ", priority)
                 priorityQ.put((priority, neighbour))
                 cameFrom[neighbour] = currentToken
     

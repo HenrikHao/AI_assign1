@@ -39,23 +39,17 @@ def search(input: dict[tuple, tuple]) -> list[tuple]:
         return actions
     while not redWin(input):
         path = aStarSearch(input, distance)
-        print(path, "path")
+        #print(path, "path")
         spreadToken = path[0]
         spreadDestination = path[1]
         direction = getDirection(spreadToken, spreadDestination)
         action = spreadToken + direction
         actions.append(action)
         spread(input, spreadToken, direction)
-        print(action)
+        #print(action)
         print(render_board(input, ansi=False))
     print(actions)
 
     # Here we're returning "hardcoded" actions for the given test.csv file.
     # Of course, you'll need to replace this with an actual solution...
-    return [
-        (5, 6, -1, 1),
-        (3, 1, 0, 1),
-        (3, 2, -1, 1),
-        (1, 4, 0, -1),
-        (1, 3, 0, -1)
-    ]
+    return actions
