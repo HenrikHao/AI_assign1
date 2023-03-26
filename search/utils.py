@@ -136,20 +136,6 @@ def addToken(board: dict[tuple, tuple], token: tuple, color: str):
     else:
         board[token] = (color, 1)
 
-def distance(p1, p2):
-    """
-    eulidean distance of two points
-    """
-    #return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
-    return 1
-
-def manhattan_distance(p1, p2):
-    """
-    Manhattan distance of two points
-    """
-    return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
-
-
 def findClosestBlueTokens(redToken, blueTokens):
     """
     this function find the closest blue token and red token
@@ -366,8 +352,8 @@ def aStarSearch(board: dict[tuple, tuple], heuristic):
                     neighbours = findAllNeighbours(currentToken)'''
                 #print(b)
                 neighbours = findAllSpreadNeighbours(currentToken, b[currentToken][1])
-                print(currentToken)
-                print(neighbours)
+                #print(currentToken)
+                #print(neighbours)
                 #print(render_board(b, ansi=True))
                 for neighbour in neighbours:
                     #copyB = b.deepcopy()
@@ -376,24 +362,28 @@ def aStarSearch(board: dict[tuple, tuple], heuristic):
                     tmpDirection = getDirection(currentToken, neighbour, copyB)
                     spread(copyB, currentToken, tmpDirection)
                     #print(render_board(copyB, ansi=True))
-                    if neighbour in copyB.keys():
+                    '''if neighbour in copyB.keys():
                         neighbourPower = copyB[neighbour][1]
                         if neighbourPower > 1:
-                            newCost -= neighbourPower
+                            newCost -= neighbourPower'''
                     if neighbour not in cost or newCost < cost[neighbour]:
                         cost[neighbour] = newCost
                         priority = newCost + heuristic(endToken, neighbour)
-                        print(endToken, neighbour, heuristic(endToken, neighbour), newCost + heuristic(endToken, neighbour))
+                        #print(endToken, neighbour, heuristic(endToken, neighbour), newCost + heuristic(endToken, neighbour))
                         #print("current ", currentToken," goes into ", neighbour, " with h", heuristic(endToken, neighbour), "new cost:", newCost, "p = ", priority)
                         priorityQ.put((priority, neighbour, copyB))
                         cameFrom[neighbour] = currentToken
 
             path = [endToken]
+            #print("START TOKEN", startToken)
+            #print("PATH", path)
+            #print(cameFrom)
+            #print(paths)
             while path[-1] != startToken:
                 path.append(cameFrom[path[-1]])
             path.reverse()
             paths.append(path)
-    print(paths, "THIS IS PATHSSSS")
+    #print(paths, "THIS IS PATHSSSS")
 
     currentCost = calculateBoardCost(board)
     costs = []
