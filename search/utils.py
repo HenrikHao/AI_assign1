@@ -2,7 +2,7 @@
 # Project Part A: Single Player Infexion
 from collections import defaultdict
 from queue import PriorityQueue
-import math
+from copy import deepcopy
 
 def apply_ansi(str, bold=True, color=None):
     """
@@ -97,8 +97,11 @@ def correctCoordinates(coordinates: tuple):
 def calculateBoardCost(board):
     cost = 0
     for token in board.keys():
-        if board[token][0] == 'b':
-            cost += 1
+        if board[token][0] == 'r':
+            power = board[token][1]
+            cost += power
+        else:
+            cost -= 1
     return cost
 
 def spread(board: dict[tuple, tuple], token: tuple, direction: tuple):
@@ -341,7 +344,8 @@ def aStarSearch(board: dict[tuple, tuple], heuristic):
             '''if endToken in allNeighbours:
                 paths.append([startToken, endToken])
                 continue'''
-            tmpBoard = board.copy()
+            #tmpBoard = board.deepcopy()
+            tmpBoard = deepcopy(board)
             priorityQ = PriorityQueue()
             priorityQ.put((0, startToken, tmpBoard))
             cameFrom = defaultdict(tuple)
@@ -364,14 +368,22 @@ def aStarSearch(board: dict[tuple, tuple], heuristic):
                 neighbours = findAllSpreadNeighbours(currentToken, b[currentToken][1])
                 print(currentToken)
                 print(neighbours)
+                #print(render_board(b, ansi=True))
                 for neighbour in neighbours:
-                    copyB = b.copy()
+                    #copyB = b.deepcopy()
+                    copyB = deepcopy(b)
                     newCost = cost[currentToken] + 1
                     tmpDirection = getDirection(currentToken, neighbour, copyB)
                     spread(copyB, currentToken, tmpDirection)
+                    #print(render_board(copyB, ansi=True))
+                    if neighbour in copyB.keys():
+                        neighbourPower = copyB[neighbour][1]
+                        if neighbourPower > 1:
+                            newCost -= neighbourPower
                     if neighbour not in cost or newCost < cost[neighbour]:
                         cost[neighbour] = newCost
                         priority = newCost + heuristic(endToken, neighbour)
+                        print(endToken, neighbour, heuristic(endToken, neighbour), newCost + heuristic(endToken, neighbour))
                         #print("current ", currentToken," goes into ", neighbour, " with h", heuristic(endToken, neighbour), "new cost:", newCost, "p = ", priority)
                         priorityQ.put((priority, neighbour, copyB))
                         cameFrom[neighbour] = currentToken
@@ -385,25 +397,39 @@ def aStarSearch(board: dict[tuple, tuple], heuristic):
 
     currentCost = calculateBoardCost(board)
     costs = []
+    #print(currentCost, "CURRENT COST")
     for path in paths:
-        boardCopy = board.copy()
-        direction = getDirection(path[0], path[1], board)
-        spread(boardCopy, path[0], direction)
+        #boardCopy = board.copy()
+        boardCopy = deepcopy(board)
+        for i in range(len(path) - 1):
+            #print(i)
+            start = path[i]
+            end = path[i+1]
+            direction = getDirection(start, end, boardCopy)
+            spread(boardCopy, start, direction)
+        
+
+        #direction = getDirection(path[0], path[1], board)
+        #spread(boardCopy, path[0], direction)
         cost = calculateBoardCost(boardCopy)
-        costs.append(cost)
+        costs.append(cost - currentCost)
 
-    minCost = min(costs)
-    minIndex = costs.index(minCost)
-    if minCost < currentCost:
-        return paths[minIndex]
+    maxCost = max(costs)
+    maxIndex = []
+    #print(maxCost, "maxcosststawetawet")
+    '''if minCost < currentCost:
+        return paths[minIndex]'''
+    for i in range(len(costs)):
+        if costs[i] == maxCost:
+            maxIndex.append(i)
+    #print(maxIndex, "maxinedwsfafew")
+    minLengthIndex = 0
+    minLength = 10000
+    for j in maxIndex:
+        pathLength = len(paths[j])
+        if pathLength < minLength:
+            minLength = pathLength
+            minLengthIndex = j
 
-    minPathIndex = 0
-    minPathLength = 10000
-    for i in range(len(paths)):
-        pathLength = len(paths[i])
-        if pathLength < minPathLength:
-            minPathLength = pathLength
-            minPathIndex = i
-
-    return paths[minPathIndex]
+    return paths[minLengthIndex]
 
